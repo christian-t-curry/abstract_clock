@@ -1,6 +1,8 @@
 import React, { useEffect, useCallback } from "react";
 
-export default function Clock(props) {
+export default function ClockUI(props) {
+  //clock style 1
+
   const draw = useCallback(() => {
     let size = 2400;
 
