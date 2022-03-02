@@ -65,7 +65,7 @@ function Sim(props) {
 
 function Clock(props) {
   const draw = useCallback(() => {
-    let size = window.innerWidth;
+    let size = 1800;
 
     let secondHandSize = size / 30;
     let secondHandDistance = size - secondHandSize;
