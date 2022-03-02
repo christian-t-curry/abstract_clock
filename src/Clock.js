@@ -36,6 +36,7 @@ export default function Clock(props) {
         0.5 * Math.PI;
       ctx.clearRect(0, 0, size, size);
       ctx.beginPath();
+      ctx.lineWidth = 10;
       ctx.arc(
         size / 2,
         size / 2,
