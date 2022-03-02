@@ -14,6 +14,7 @@ export default function ClockControls(props) {
     var startTime = milSecond + second + min;
     setClick(startTime);
     setHour(time.getHours() + hourMod);
+    
   }
 
   useEffect(() => {
@@ -33,7 +34,7 @@ export default function ClockControls(props) {
           <h2>Hour {hour % 12}</h2>
         </div>
         <div>
-          <ClockUI click={0} hour={0} clockStyle={2} />
+          <ClockUI click={0} hour={0} size={props.size} isWider={props.isWider} />
         </div>
       </div>
     );
@@ -41,7 +42,7 @@ export default function ClockControls(props) {
     return (
       <div>
         <div>
-          <ClockUI click={click} hour={hour} />
+          <ClockUI click={click} hour={hour} size={props.size} isWider={props.isWider} />
         </div>
       </div>
     );

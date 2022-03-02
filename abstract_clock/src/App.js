@@ -2,17 +2,28 @@ import "./styles.css";
 import React, { useState, useEffect } from "react";
 import ClockControls from "./ClockControls.js";
 
-var time = new Date();
-var milSecond = time.getMilliseconds();
-var second = time.getSeconds() * 60;
-var min = time.getMinutes() * 60 * 60;
-var hour = time.getHours();
-var startTime = milSecond + second + min;
+let w = window.innerWidth;
+let h = window.innerHeight;
+let padding = 20;
+let size; 
+let isWider;
+
+function getSize() {
+  if (h>w){
+    size = w - padding;
+    isWider = false;
+  } else{
+    size = h - padding;
+    isWider = true;
+  }
+}
+
+getSize(); 
 
 export default function App() {
   return (
     <div className="App">
-      <ClockControls debug={false} startTime={startTime} />
+      <ClockControls debug={false} size={size} isWider={isWider}/>
     </div>
   );
 }

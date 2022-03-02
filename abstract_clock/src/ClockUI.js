@@ -4,7 +4,7 @@ export default function ClockUI(props) {
   //clock style 1
 
   const draw = useCallback(() => {
-    let size = 2400;
+    let size = props.size * 2;
 
     let outerLineWidth = size / 180;
     let outerLineLength = 80;
@@ -144,10 +144,18 @@ export default function ClockUI(props) {
   useEffect(() => {
     draw();
   }, [draw]);
-
-  return (
-    <div id="clockWrapper">
-      <canvas id="clock"> </canvas>
-    </div>
-  );
+  if (props.isWider) {
+    return (
+      <div id="clockWrapper">
+        <canvas class="wideClock" id="clock" > </canvas>
+      </div>
+    );
+  } else {
+    return (
+      <div id="clockWrapper">
+        <canvas class="tallClock" id="clock" > </canvas>
+      </div>
+    );
+  }
+  
 }
