@@ -1,2 +1,2 @@
-# abstract_clock
-Created with CodeSandbox
+# abstract clock
+A real time clock using react
