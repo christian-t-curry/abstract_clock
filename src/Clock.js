@@ -1,8 +1,11 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useEffect, useCallback } from "react";
 
 export default function Clock(props) {
   const draw = useCallback(() => {
-    let size = 1800;
+    let size = 2400;
+
+    let outerLineWidth = size / 180;
+    let outerLineLength = 80;
 
     let secondHandSize = size / 30;
     let secondHandDistance = size - secondHandSize;
@@ -31,18 +34,18 @@ export default function Clock(props) {
 
     function drawRing(ctx) {
       let lead =
-        ((360 / 1000) * (props.click % 1000) * Math.PI) / 180 +
-        100 -
+        ((360 / 1000) * ((props.click % 1000) + outerLineLength) * Math.PI) /
+          180 -
         0.5 * Math.PI;
       ctx.clearRect(0, 0, size, size);
       ctx.beginPath();
-      ctx.lineWidth = 10;
+      ctx.lineWidth = outerLineWidth;
       ctx.arc(
         size / 2,
         size / 2,
-        size / 2 - 1,
-        lead,
-        ((360 / 1000) * (props.click % 1000) * Math.PI) / 180 - 0.5 * Math.PI
+        size / 2 - outerLineWidth / 2,
+        ((360 / 1000) * (props.click % 1000) * Math.PI) / 180 - 0.5 * Math.PI,
+        lead
       );
       ctx.stroke();
     }
