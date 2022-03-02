@@ -146,7 +146,7 @@ export default function ClockUI(props) {
   }, [draw]);
 
   return (
-    <div>
+    <div id="clockWrapper">
       <canvas id="clock"> </canvas>
     </div>
   );
