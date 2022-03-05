@@ -10,3 +10,14 @@
 .tallClock {
   width: 90%;
 }
+
+#mainInterface {
+  display: flex;
+}
+
+select { 
+  height: 50px;
+  align-self: center;
+  padding: 8px; 
+  font-size: 16px;
+}

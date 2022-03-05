@@ -1,7 +1,14 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 
 export default function ClockUI(props) {
-  //clock style 1
+  let clockClass = "error"
+  if(props.isWider) {
+    clockClass = "wideClock"
+  } else {
+    clockClass = "tallClock"
+  }
+
+  const [clockStyle, setClockStyle] = useState(1);
 
   const draw = useCallback(() => {
     let size = props.size * 2;
@@ -23,16 +30,119 @@ export default function ClockUI(props) {
     ctx.canvas.width = size;
     ctx.canvas.height = size;
 
-    //This is the spinning outer ring
-    drawRing(ctx);
+    if(clockStyle == 1 ) {
+      //This is the spinning outer ring
+      drawRing(ctx);
 
-    //Spinning dot is annoying ish
-    //It Matches the spinning ring but seems excessive
-    //drawSpinningDot(ctx);
+      //Spinning dot is annoying ish
+      //It Matches the spinning ring but seems excessive
+      //drawSpinningDot(ctx);
 
-    drawSecondHand(ctx);
-    drawMinuteHand(ctx);
-    drawHourHand(ctx);
+      drawSecondHand(ctx);
+      drawMinuteHand(ctx);
+      drawHourHand(ctx);
+
+    } else {
+      drawBouncingClicks(ctx);
+      drawBouncingSeconds(ctx);
+      drawBouncingMins(ctx);
+      drawBouncingHours(ctx);
+    }
+
+    function drawBouncingClicks(ctx) {
+      let dotSize = size/20;
+      let rads = (Math.PI * 2)/(1000) * (props.click%1000) - 0.5 * Math.PI;
+      let dotY = (Math.sin(rads) * (size / 2 - dotSize) ) + size/2 ;
+      ctx.beginPath();
+      ctx.fillStyle = "black";
+      ctx.fillRect(0, 0, dotSize * 2, size);
+      ctx.fillStyle = "white";
+      ctx.arc(dotSize, dotY , dotSize, 0, 6.2);
+      ctx.fill();
+      ctx.fillStyle = "black";
+      ctx.strokeRect(0,0,8*dotSize,size);
+    }
+
+    function drawBouncingSeconds(ctx) {
+      let dotSize = size/20;
+      let rads = (Math.PI * 2)/(60*1000) * (props.click%(60*1000)) - 0.5 * Math.PI;
+      let dotY = (Math.sin(rads) * (size / 2 - dotSize) ) + size/2 ;
+      for(var i = 0; i <=30; i++) {
+        let edgeAdjust = 0;
+        let sinAdjust = Math.sin((Math.PI * 2)/30 * i -  Math.PI) * ((size - dotSize  )/30);
+        if(i == 0) {
+          edgeAdjust = 1;
+        } else if (i ==30) {
+          edgeAdjust = -1;
+        }
+        ctx.moveTo(2*dotSize, i*((size - 2 * dotSize)/30)+edgeAdjust+sinAdjust + dotSize);
+        ctx.lineTo(6*dotSize, i*((size - 2 * dotSize)/30)+edgeAdjust+sinAdjust + dotSize);
+        ctx.stroke();
+      }
+      if (rads < .5 *Math.PI) {
+        ctx.fillStyle="white";
+        ctx.fillRect(2*dotSize, dotY, 2*dotSize, size-dotY - 1);
+        ctx.fillStyle="black";
+      } else {
+        ctx.fillStyle="white";
+        ctx.fillRect(2*dotSize, 1, 2*dotSize, dotY);
+        ctx.fillStyle="black";
+      }
+      ctx.beginPath();
+      ctx.arc(dotSize + 2*dotSize, dotY , dotSize, 0, 6.2);
+      ctx.fill();
+    }
+
+    function drawBouncingMins(ctx) {
+      let dotSize = size/20;
+      let rads = (Math.PI * 2)/(60*60*1000) * (props.click%(60*60*1000)) - 0.5 * Math.PI;;
+      let dotY = (Math.sin(rads) * (size / 2 - dotSize) ) + size/2 ;
+      if (rads < .5 *Math.PI) {
+        ctx.fillStyle="white";
+        ctx.fillRect(4*dotSize, dotY, 2*dotSize, size-dotY - 1);
+        ctx.fillStyle="black";
+      } else {
+        ctx.fillStyle="white";
+        ctx.fillRect(4*dotSize, 1, 2*dotSize, dotY);
+        ctx.fillStyle="black";
+      }
+      ctx.beginPath();
+      ctx.arc(dotSize + 4*dotSize, dotY , dotSize, 0, 6.2);
+      ctx.fill();
+      
+    }
+
+    function drawBouncingHours(ctx) {
+      let dotSize = size/20;
+      let rads = (Math.PI * 2)/(24) * (props.hour) - 0.5 * Math.PI;
+      let dotY = (Math.sin(rads) * (size / 2 - dotSize) ) + size/2 ;
+      for(var i = 0; i <=12; i++) {
+        let edgeAdjust = 0;
+        let sinAdjust = Math.sin((Math.PI * 2)/12 * i -  Math.PI) * (size/12);
+        if(i == 0) {
+          edgeAdjust = 1;
+        } else if (i ==12) {
+          edgeAdjust = -1;
+        }
+        ctx.moveTo(6*dotSize, i*((size - 2 * dotSize)/12)+edgeAdjust+sinAdjust+dotSize);
+        ctx.lineTo(8*dotSize, i*((size - 2 * dotSize)/12)+edgeAdjust+sinAdjust+dotSize);
+        ctx.stroke();
+        
+      }
+      if (rads < .5 *Math.PI) {
+        ctx.fillStyle="white";
+        ctx.fillRect(6*dotSize, dotY, 2*dotSize, size-dotY);
+        ctx.fillStyle="black";
+      } else {
+        ctx.fillStyle="white";
+        ctx.fillRect(6*dotSize, 0, 2*dotSize, dotY);
+        ctx.fillStyle="black";
+      }
+      ctx.beginPath();
+      ctx.arc(dotSize + 6*dotSize, dotY , dotSize, 0, 6.2);
+      ctx.fill();
+     
+    }
 
     function drawRing(ctx) {
       let lead =
@@ -144,18 +254,23 @@ export default function ClockUI(props) {
   useEffect(() => {
     draw();
   }, [draw]);
-  if (props.isWider) {
-    return (
-      <div id="clockWrapper">
-        <canvas class="wideClock" id="clock" > </canvas>
-      </div>
-    );
-  } else {
-    return (
-      <div id="clockWrapper">
-        <canvas class="tallClock" id="clock" > </canvas>
-      </div>
-    );
+
+  function handleStyleChange(e){
+    setClockStyle(e.target.value);
   }
+
+  return (
+    <div id="mainInterface" >
+      <select name="Clock Style" onChange={handleStyleChange}>
+        <option value="1">Abstract</option>
+        <option value="2">Bouncing</option>
+      </select>
+      <div id="clockWrapper">
+        <canvas className={clockClass} id="clock" > </canvas>
+      </div>
+    </div>
+
+  );
+  
   
 }

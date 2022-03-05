@@ -5,21 +5,36 @@ export default function ClockControls(props) {
   const [click, setClick] = useState(props.startTime);
   const [hour, setHour] = useState(0);
   const [hourMod, setHourMod] = useState(0);
+  const [isWider, setIsWider] = useState(true);
+  const [size, setSize] = useState(800);
 
   function getTime() {
     var time = new Date();
     var milSecond = time.getMilliseconds();
     var second = time.getSeconds() * 1000;
     var min = time.getMinutes() * 60 * 1000;
-    var startTime = milSecond + second + min;
-    setClick(startTime);
-    setHour(time.getHours() + hourMod);
-    
+    var currentTime = milSecond + second + min;
+    setClick(currentTime);
+    setHour(time.getHours() + hourMod); 
+  }
+
+  function getSize() {
+    let w = window.innerWidth;
+    let h = window.innerHeight;
+    let padding = 20;
+    if (h>w){
+      setSize(w - padding);
+      setIsWider(false)
+    } else{
+      setSize(h - padding);
+      setIsWider(true);
+    }
   }
 
   useEffect(() => {
     let timer = setTimeout(() => {
       getTime();
+      getSize();
     }, 1000 / 60);
     return () => {
       clearTimeout(timer);
@@ -34,7 +49,7 @@ export default function ClockControls(props) {
           <h2>Hour {hour % 12}</h2>
         </div>
         <div>
-          <ClockUI click={0} hour={0} size={props.size} isWider={props.isWider} />
+          <ClockUI click={0} hour={0} size={size} isWider={isWider} style={props.style}/>
         </div>
       </div>
     );
@@ -42,7 +57,7 @@ export default function ClockControls(props) {
     return (
       <div>
         <div>
-          <ClockUI click={click} hour={hour} size={props.size} isWider={props.isWider} />
+          <ClockUI click={click} hour={hour} size={size} isWider={isWider} style={props.style}/>
         </div>
       </div>
     );
