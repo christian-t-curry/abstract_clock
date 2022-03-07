@@ -32,12 +32,12 @@ export default function ClockUI(props) {
 
     if(clockStyle == 1 ) {
       //This is the spinning outer ring
-      drawRing(ctx);
+      
 
       //Spinning dot is annoying ish
       //It Matches the spinning ring but seems excessive
       //drawSpinningDot(ctx);
-
+      drawRing(ctx);
       drawSecondHand(ctx);
       drawMinuteHand(ctx);
       drawHourHand(ctx);
@@ -65,6 +65,7 @@ export default function ClockUI(props) {
 
     function drawBouncingSeconds(ctx) {
       let dotSize = size/20;
+      let smallDotSize = dotSize/3;
       let rads = (Math.PI * 2)/(60*1000) * (props.click%(60*1000)) - 0.5 * Math.PI;
       let dotY = (Math.sin(rads) * (size / 2 - dotSize) ) + size/2 ;
       for(var i = 0; i <=30; i++) {
@@ -75,10 +76,19 @@ export default function ClockUI(props) {
         } else if (i ===30) {
           edgeAdjust = -1;
         }
-        ctx.moveTo(2*dotSize, i*((size - 2 * dotSize)/30)+edgeAdjust+sinAdjust + dotSize);
-        ctx.lineTo(6*dotSize, i*((size - 2 * dotSize)/30)+edgeAdjust+sinAdjust + dotSize);
-        ctx.stroke();
+        ctx.fillStyle="black";
+        ctx.beginPath();
+        ctx.arc(3*dotSize, i*((size - 2 * dotSize)/30)+edgeAdjust+sinAdjust+dotSize, smallDotSize, 0, 2*Math.PI*smallDotSize);
+        if (i%10 == 0 && i !=0 && i !=30) {
+          ctx.fillStyle = "grey";
+          ctx.fill();
+          ctx.stroke();
+          ctx.fillStyle = "black";
+        } else {
+          ctx.stroke();
+        }
       }
+
       if (rads < .5 *Math.PI) {
         ctx.fillStyle="white";
         ctx.fillRect(2*dotSize, dotY, 2*dotSize, size-dotY - 1);
@@ -88,15 +98,39 @@ export default function ClockUI(props) {
         ctx.fillRect(2*dotSize, 1, 2*dotSize, dotY);
         ctx.fillStyle="black";
       }
+
       ctx.beginPath();
-      ctx.arc(dotSize + 2*dotSize, dotY , dotSize, 0, 6.2);
+      ctx.arc(dotSize + 2*dotSize, dotY , smallDotSize, 0, 6.2);
       ctx.fill();
     }
 
     function drawBouncingMins(ctx) {
       let dotSize = size/20;
+      let smallDotSize = dotSize/2
       let rads = (Math.PI * 2)/(60*60*1000) * (props.click%(60*60*1000)) - 0.5 * Math.PI;;
       let dotY = (Math.sin(rads) * (size / 2 - dotSize) ) + size/2 ;
+
+      for(var i = 0; i <=30; i++) {
+        let edgeAdjust = 0;
+        let sinAdjust = Math.sin((Math.PI * 2)/30 * i -  Math.PI) * ((size - dotSize  )/30);
+        if(i === 0) {
+          edgeAdjust = 1;
+        } else if (i ===30) {
+          edgeAdjust = -1;
+        }
+        ctx.fillStyle="black";
+        ctx.beginPath();
+        ctx.arc(5*dotSize, i*((size - 2 * dotSize)/30)+edgeAdjust+sinAdjust+dotSize, smallDotSize, 0, 2*Math.PI*smallDotSize);
+        if (i%10 == 0 && i !=0 && i !=30) {
+          ctx.fillStyle = "grey";
+          ctx.fill();
+          ctx.stroke();
+          ctx.fillStyle = "black";
+        } else {
+          ctx.stroke();
+        }
+      }
+
       if (rads < .5 *Math.PI) {
         ctx.fillStyle="white";
         ctx.fillRect(4*dotSize, dotY, 2*dotSize, size-dotY - 1);
@@ -107,16 +141,17 @@ export default function ClockUI(props) {
         ctx.fillStyle="black";
       }
       ctx.beginPath();
-      ctx.arc(dotSize + 4*dotSize, dotY , dotSize, 0, 6.2);
+      ctx.arc(dotSize + 4*dotSize, dotY , smallDotSize, 0, 6.2);
       ctx.fill();
       
     }
 
     function drawBouncingHours(ctx) {
       let dotSize = size/20;
-      let rads = (Math.PI * 2)/(24) * (props.hour) - 0.5 * Math.PI;
+      let smallDotSize = dotSize;
+      let rads = (Math.PI * 2)/(24) * (props.hour + (props.click/(60*60*1000))) - 0.5 * Math.PI;
       let dotY = (Math.sin(rads) * (size / 2 - dotSize) ) + size/2 ;
-      for(var i = 0; i <=12; i++) {
+      for(var i = 0; i <12; i++) {
         let edgeAdjust = 0;
         let sinAdjust = Math.sin((Math.PI * 2)/12 * i -  Math.PI) * (size/12);
         if(i === 0) {
@@ -124,20 +159,31 @@ export default function ClockUI(props) {
         } else if (i === 12) {
           edgeAdjust = -1;
         }
-        ctx.moveTo(6*dotSize, i*((size - 2 * dotSize)/12)+edgeAdjust+sinAdjust+dotSize);
-        ctx.lineTo(8*dotSize, i*((size - 2 * dotSize)/12)+edgeAdjust+sinAdjust+dotSize);
-        ctx.stroke();
-        
+
+        ctx.fillStyle="black";
+        ctx.beginPath();
+        ctx.arc(7*dotSize, i*((size - 2 * dotSize)/12)+edgeAdjust+sinAdjust+dotSize, smallDotSize, 0, 2*Math.PI*smallDotSize);
+
+        if (i%3 == 0 && i !=0 && i !=12) {
+          ctx.fillStyle = "grey";
+          ctx.fill();
+          ctx.stroke();
+          ctx.fillStyle = "black";
+        } else {
+          ctx.stroke();
+        }
       }
+
       if (rads < .5 *Math.PI) {
         ctx.fillStyle="white";
-        ctx.fillRect(6*dotSize, dotY, 2*dotSize, size-dotY);
+        ctx.fillRect(6*dotSize -1, dotY, 2*dotSize, size-dotY);
         ctx.fillStyle="black";
       } else {
         ctx.fillStyle="white";
-        ctx.fillRect(6*dotSize, 0, 2*dotSize, dotY);
+        ctx.fillRect(6*dotSize -1, 0, 2*dotSize, dotY);
         ctx.fillStyle="black";
       }
+
       ctx.beginPath();
       ctx.arc(dotSize + 6*dotSize, dotY , dotSize, 0, 6.2);
       ctx.fill();
