@@ -32,12 +32,12 @@ export default function ClockUI(props) {
 
     if(clockStyle == 1 ) {
       //This is the spinning outer ring
-      
+      drawRing(ctx);
 
       //Spinning dot is annoying ish
       //It Matches the spinning ring but seems excessive
       //drawSpinningDot(ctx);
-      drawRing(ctx);
+
       drawSecondHand(ctx);
       drawMinuteHand(ctx);
       drawHourHand(ctx);
@@ -163,7 +163,7 @@ export default function ClockUI(props) {
         ctx.fillStyle="black";
         ctx.beginPath();
         ctx.arc(7*dotSize, i*((size - 2 * dotSize)/12)+edgeAdjust+sinAdjust+dotSize, smallDotSize, 0, 2*Math.PI*smallDotSize);
-
+        
         if (i%3 == 0 && i !=0 && i !=12) {
           ctx.fillStyle = "grey";
           ctx.fill();
@@ -207,31 +207,6 @@ export default function ClockUI(props) {
       );
       ctx.stroke();
     }
-
-    /* 
-    // Deprecating for now 
-
-    function drawSpinningDot(ctx) {
-      let xClick =
-        (size / 2 - size / 10) *
-          Math.cos(
-            ((360 / 1000) * (props.click % 1000) * Math.PI) / 180 -
-              0.5 * Math.PI
-          ) +
-        size / 2;
-      let yClick =
-        (size / 2 - size / 10) *
-          Math.sin(
-            ((360 / 1000) * (props.click % 1000) * Math.PI) / 180 -
-              0.5 * Math.PI
-          ) +
-        size / 2;
-      ctx.beginPath();
-      ctx.arc(xClick, yClick, size / 20, 0, 2 * Math.PI * (size / 10));
-      ctx.fill();
-    }
-
-    */
 
     function drawSecondHand(ctx) {
       let xSec =
